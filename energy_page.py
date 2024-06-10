@@ -255,7 +255,7 @@ def main():
     col1, col2 = st.columns(2)
     with col1:
         st.write('**Map of ETSAB Buildings**')
-        st.image('/home/olga/Desktop/tfg/Situació campus sud-set 2017-Modelo_page-0001.jpg', width=400)
+        st.image('Situació campus sud-set 2017-Modelo_page-0001.jpg', width=400)
     with col2:
         plot_energia_total()
 
