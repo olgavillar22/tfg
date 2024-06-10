@@ -240,6 +240,17 @@ def main():
     st.write("""To start, we'll take a look at the evolution of energy consumption in 2023 comparing the three buildings. For better understanding, you can adjust the time aggregation to see more or less detailed data. Additionally, softening the vacation days ensures that they do not alter the global trend. So, the softening button removes the weekends and vacation days data, which are specified in the Additional Information section at the end of the page, so that the chart autocompletes them continuing the line of the labor days. Furthermore, you can filter the start and end dates of the period you want to examine in detail.
     """)
     plot_energia()
+    # Insights & Takeaways
+    st.markdown("""
+    <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
+      <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways:</h4>
+      <ul>
+          <li>Despite building A electricity is only consumed by lightening and not heating, it is the most consuming building among all.</li>
+          <li>A clear decrease on weekends and vacation days can be observed, proportionally to the normal consumption of each building.</li>
+          <li>Buildings A and C present a decrease of energy consumption in warm months, while B remains practically constant (with exception of August).</li>
+      </ul>
+    </div>
+    """, unsafe_allow_html=True)
     # Map and Pie chart of Energy Consumption
     col1, col2 = st.columns(2)
     with col1:
@@ -259,17 +270,6 @@ def main():
         st.metric(label="Energy Consumption of Building B in 2023", value="143444.78 kWh")
         st.metric(label="Total ETSAB Energy Consumption in 2023", value="854543.41 kWh")
 
-    # Insights & Takeaways
-    st.markdown("""
-    <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
-        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways:</h4>
-        <ul>
-            <li>Despite building A electricity is only consumed by lightening and not heating, it is the most consuming building among all.</li>
-            <li>A clear decrease on weekends and vacation days can be observed, proportionally to the normal consumption of each building.</li>
-            <li>Buildings A and C present a decrease of energy consumption in warm months, while B remains practically constant (with exception of August).</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
 
     # Consumption Patterns
     st.markdown("<h4 >Seasonal Consumption Patterns</h4>", unsafe_allow_html=True)
@@ -283,8 +283,6 @@ def main():
         <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways:</h4>
         <ul>
             <li>In vacation and Summer days, a huge decrease of consumption can be appreciated in all the buildings. </li>
-            <li>...</li>
-            <li>...</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -302,7 +300,6 @@ def main():
         <ul>
             <li>It can clearly be seen that as more difference of indoor-outdoor temperature, more energy consumption. </li>
             <li>it is curious to see that the mean temperature indoors is always highest than the outdoors temperature.</li>
-            <li>...</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
