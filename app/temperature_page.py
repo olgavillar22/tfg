@@ -1,21 +1,15 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import altair as alt
-from pandas.api.types import CategoricalDtype
-import matplotlib.pyplot as plt
 import plotly.express as px
-import plotly.graph_objects as go
-from streamlit_plotly_events import plotly_events
-from sklearn.cluster import DBSCAN
 
 from common_functions import *
 
 
 @st.experimental_fragment
 def plot_diff_floors_temperatura():
-    diff_temp = pd.read_csv('/home/olga/Desktop/tfg/temperaturefloordiff.csv')
-    mean_monthly_temp = pd.read_csv('/home/olga/Desktop/tfg/temperaturefloormean.csv')
+    diff_temp = pd.read_csv('temperaturefloordiff.csv')
+    mean_monthly_temp = pd.read_csv('temperaturefloormean.csv')
     palette_plantes = alt.Scale(domain=[1, 2, 3, 4, 5, 6], range=['#2496cd', '#e52b50', '#3b7a57', '#ff8b00', '#804040', '#9932cc'])
 
     # Slider for the month
@@ -75,7 +69,7 @@ def plot_floors_temp():
 
 @st.cache_data
 def plot_temperatura_aules():
-    df = pd.read_csv('/home/olga/Desktop/tfg/temperaturesubsampledETSAB2023_clean.csv')
+    df = pd.read_csv('temperaturesubsampledETSAB2023_clean.csv')
 
     df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d %H:%M:%S')
     color_palette = alt.Scale(domain=['Comfort', 'Too cold', 'Too warm'], range=['blue', '#77b5fe', '#c3272b'])
@@ -102,8 +96,8 @@ def plot_temperatura_aules():
 
 @st.experimental_fragment
 def heatmap_temperatures():
-    sourcemonth = pd.read_csv('/home/olga/Desktop/tfg/qualitat_aules.csv')
-    sourceyear = pd.read_csv('/home/olga/Desktop/tfg/qualitat_aules_globalnovacation.csv')
+    sourcemonth = pd.read_csv('qualitat_aules.csv')
+    sourceyear = pd.read_csv('qualitat_aules_globalnovacation.csv')
 
     groupby_options = ['Whole year', 'Group by month']
     select_radio = st.radio("Choose time aggregation:", groupby_options, key = "time_agg", horizontal = True)
@@ -170,7 +164,7 @@ def metrics_aules_temp():
     st.write('**Ranking: Temperature Statistics for Each Class**')
 
     # Load and preprocess the data
-    aules_temp = pd.read_csv('/home/olga/Desktop/tfg/temperatureaulesETSAB2023_clean.csv')
+    aules_temp = pd.read_csv('temperatureaulesETSAB2023_clean.csv')
     grouped_temp = aules_temp.groupby('Aula')['Temperatura'].agg(['mean', 'min', 'max']).reset_index()
 
     # Round the numbers to 2 decimals
@@ -206,7 +200,7 @@ def metrics_aules_temp():
 
 
 def violinplot_floors():
-    df = pd.read_csv('/home/olga/Desktop/tfg/temperatureETSAB2023_clean.csv')
+    df = pd.read_csv('temperatureETSAB2023_clean.csv')
     fig = px.violin(df, y="avg_temp", x="Planta", color="Planta", box=True, labels={'Planta':'Floor', 'avg_temp':'Temperature (℃)'})
     fig.update_layout(title_text="Distribution of temperature in the different floors of building A")
 

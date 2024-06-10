@@ -1,14 +1,6 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import altair as alt
-from pandas.api.types import CategoricalDtype
-import matplotlib.pyplot as plt
-import plotly.express as px
-import plotly.graph_objects as go
-
-from streamlit_plotly_events import plotly_events
-
 
 from common_functions import *
 
@@ -86,15 +78,15 @@ def heatmap_aules_quality():
     select_epoch_var= st.radio("Choose the time aggregation", groupby_options, key = "filter_epoch_heatmap", horizontal = True)
 
     if select_epoch_var == 'All year':
-        source = pd.read_csv('/home/olga/Desktop/tfg/qualitat_aules_globalnovacation.csv')
+        source = pd.read_csv('qualitat_aules_globalnovacation.csv')
         heatmap_aules_quality_chart(source)
 
     elif select_epoch_var == 'Q1 (september - january)':
-        source = pd.read_csv('/home/olga/Desktop/tfg/qualitat_aules_Q1.csv')
+        source = pd.read_csv('qualitat_aules_Q1.csv')
         heatmap_aules_quality_chart(source)
 
     else:
-        source = pd.read_csv('/home/olga/Desktop/tfg/qualitat_aules_Q2.csv')
+        source = pd.read_csv('qualitat_aules_Q2.csv')
         heatmap_aules_quality_chart(source)
 
 
@@ -177,15 +169,15 @@ def heatmap_aules_quality_metrics():
     select_epoch_var= st.radio("Choose the time aggregation", groupby_options, key = "filter_epoch_heatmap2", horizontal = True)
 
     if select_epoch_var == 'All year':
-        source = pd.read_csv('/home/olga/Desktop/tfg/class_quality_measures.csv')
+        source = pd.read_csv('class_quality_measures.csv')
         heatmap_quality_metrics(source)
 
     elif select_epoch_var == 'Q1 (september - january)':
-        source = pd.read_csv('/home/olga/Desktop/tfg/class_quality_measuresQ1.csv')
+        source = pd.read_csv('class_quality_measuresQ1.csv')
         heatmap_quality_metrics(source)
 
     else:
-        source = pd.read_csv('/home/olga/Desktop/tfg/class_quality_measuresQ2.csv')
+        source = pd.read_csv('class_quality_measuresQ2.csv')
         heatmap_quality_metrics(source)
 
 

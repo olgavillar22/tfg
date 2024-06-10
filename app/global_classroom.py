@@ -13,17 +13,17 @@ def normalize_percentages(df, groupby_cols):
 
 @st.experimental_fragment
 def dataclass_building_selection():
-    finestres = pd.read_csv('/home/olga/Desktop/tfg/finestresaulesETSAB2023_clean.csv')
+    finestres = pd.read_csv('finestresaulesETSAB2023_clean.csv')
     aules_data = {
-            'Temperature': pd.read_csv('/home/olga/Desktop/tfg/temperatureaulesETSAB2023_clean.csv'),
-            'CO2': pd.read_csv('/home/olga/Desktop/tfg/co2aulesETSAB2023_clean.csv'),
-            'Humidity': pd.read_csv('/home/olga/Desktop/tfg/humidityaulesETSAB2023_clean.csv')
+            'Temperature': pd.read_csv('temperatureaulesETSAB2023_clean.csv'),
+            'CO2': pd.read_csv('co2aulesETSAB2023_clean.csv'),
+            'Humidity': pd.read_csv('humidityaulesETSAB2023_clean.csv')
         }
     aules_data['Temperature'] = aules_data['Temperature'].rename(columns={'Temperatura':'Temperature'})
     quality_data = {
-            'Temperature': pd.read_csv('/home/olga/Desktop/tfg/piequalitytemp.csv'),
-            'CO2': pd.read_csv('/home/olga/Desktop/tfg/piequalityco2.csv'),
-            'Humidity': pd.read_csv('/home/olga/Desktop/tfg/piequalityhum.csv')
+            'Temperature': pd.read_csv('piequalitytemp.csv'),
+            'CO2': pd.read_csv('piequalityco2.csv'),
+            'Humidity': pd.read_csv('piequalityhum.csv')
         }
     for var in aules_data:
         aules_data[var]['Date'] = pd.to_datetime(aules_data[var]['Date'], format='%Y-%m-%d %H:%M:%S')

@@ -55,7 +55,7 @@ def get_time_filter(kind):
 
 def get_temperatureA_data():
     # Dades de temperatura de l'edifici A per plantes
-    temp = pd.read_csv('/home/olga/Desktop/tfg/temperatureETSAB2023_clean.csv')
+    temp = pd.read_csv('temperatureETSAB2023_clean.csv')
     temp['Date'] = pd.to_datetime(temp['Date'], format='%Y-%m-%d %H:%M:%S')
 
     return temp

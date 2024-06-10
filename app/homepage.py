@@ -1,17 +1,4 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-import altair as alt
-from pandas.api.types import CategoricalDtype
-import matplotlib.pyplot as plt
-import plotly.express as px
-import plotly.graph_objects as go
-
-from streamlit_plotly_events import plotly_events
-
-
-from common_functions import *
-
 
 def main():
     html_temp = """

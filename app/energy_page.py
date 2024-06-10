@@ -1,17 +1,12 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import altair as alt
-from pandas.api.types import CategoricalDtype
-import matplotlib.pyplot as plt
-import plotly.express as px
-import plotly.graph_objects as go
-from streamlit_plotly_events import plotly_events
+
 from common_functions import *
 
 
 def get_energy_data(festius = True):
-    energia = pd.read_csv('/home/olga/Desktop/tfg/energia_activaETSAB2023_clean.csv')
+    energia = pd.read_csv('energia_activaETSAB2023_clean.csv')
     if not festius:
         energia = energia[energia['festiu'] == False]
 
@@ -105,7 +100,7 @@ def plot_energia():
 @st.experimental_fragment
 def plot_temp_energy():
     # PB: HEM FILTRAT NO WEEKENDS EN ENERGIA PERÒ EN TEMP SI Q HI SON
-    campus_temp = pd.read_csv('/home/olga/Desktop/tfg/tempCAMPUS2023_clean.csv')
+    campus_temp = pd.read_csv('tempCAMPUS2023_clean.csv')
     campus_temp['Date'] = pd.to_datetime(campus_temp['Date'], format='%Y-%m-%d %H:%M:%S')
 
     #select_vacation = get_festius_energy_selection('entemp')
@@ -191,7 +186,7 @@ def plot_temp_energy():
 
 @st.experimental_fragment
 def plot_week_seasonal_energy_trend():
-    energia = pd.read_csv('/home/olga/Desktop/tfg/energia_seasonalETSAB2023_clean.csv')
+    energia = pd.read_csv('energia_seasonalETSAB2023_clean.csv')
     color_palette = alt.Scale(domain=['Autumn', 'Winter', 'Spring', 'Summer', 'Vacation'], range=['#996600', '#4997d0', '#3cd070', '#f5c71a', '#ff55a3'])
 
     building_options = ['A (Segarra)', 'B', 'C (Codach)', 'Total']

@@ -1,21 +1,14 @@
 import streamlit as st
 import pandas as pd
-import seaborn as sns
-import numpy as np
 import altair as alt
-from pandas.api.types import CategoricalDtype
-import matplotlib.pyplot as plt
 import plotly.express as px
-import plotly.graph_objects as go
-from streamlit_plotly_events import plotly_events
-from sklearn.cluster import DBSCAN
 
 from common_functions import *
 
 
 @st.cache_data
 def plot_co2_aules():
-    aules_co2 = pd.read_csv('/home/olga/Desktop/tfg/co2subsampledETSAB2023_clean.csv')
+    aules_co2 = pd.read_csv('co2subsampledETSAB2023_clean.csv')
 
     aules_co2['Date'] = pd.to_datetime(aules_co2['Date'], format='%Y-%m-%d %H:%M:%S')
     color_palette = alt.Scale(domain=['Comfort', 'Unhealthy', 'Outdoor air'], range=['blue', '#c3272b', '#3eb489'])
@@ -41,7 +34,7 @@ def plot_co2_aules():
 
 
 def violinplot_floors():
-    df = pd.read_csv('/home/olga/Desktop/tfg/co2novacation.csv')
+    df = pd.read_csv('co2novacation.csv')
     fig = px.violin(df, y="CO2", x="planta", color="planta", box=True, labels={'planta':'Floor', 'CO2':'CO₂'})
     fig.update_layout(title_text="Distribution of CO₂ concentration in floors of building A")
 
@@ -49,7 +42,7 @@ def violinplot_floors():
 
 
 def co2_during_day():
-    df = pd.read_csv('/home/olga/Desktop/tfg/co2duringday.csv')
+    df = pd.read_csv('co2duringday.csv')
 
     chart = alt.Chart(df).mark_line().encode(
         x = alt.X('hour_of_day:O', title = 'hour of the day'),
@@ -61,7 +54,7 @@ def co2_during_day():
 
 
 def boxplot_finestres():
-    co2_aulesA2 = pd.read_csv('/home/olga/Desktop/tfg/co2novacation.csv')
+    co2_aulesA2 = pd.read_csv('co2novacation.csv')
 
     finestres = pd.DataFrame(data={'Aula': ['A-11','A-12','A-13','A-14','A-21','A-22','A-23','A-24','A-31','A-32',
     'A-33','A-34','A-35','A-36','A-41','A-42','A-43','A-44','A-51','A-52','A-53','A-54','A-55','A-56','A-61','A-62'],
@@ -82,8 +75,8 @@ def boxplot_finestres():
 
 @st.experimental_fragment
 def heatmap_co2():
-    sourcemonth = pd.read_csv('/home/olga/Desktop/tfg/qualitat_aules.csv')
-    sourceyear = pd.read_csv('/home/olga/Desktop/tfg/qualitat_aules_globalnovacation.csv')
+    sourcemonth = pd.read_csv('qualitat_aules.csv')
+    sourceyear = pd.read_csv('qualitat_aules_globalnovacation.csv')
 
     groupby_options = ['Whole year', 'Group by month']
     select_radio = st.radio("Choose time aggregation:", groupby_options, key = "time_agg_co2", horizontal = True)
@@ -123,7 +116,7 @@ def metrics_aules_co2():
     st.write('**Ranking: CO₂ Statistics for Each Class**')
 
     # Load and preprocess the data
-    aules_temp = pd.read_csv('/home/olga/Desktop/tfg/co2aulesETSAB2023_clean.csv')
+    aules_temp = pd.read_csv('co2aulesETSAB2023_clean.csv')
     grouped_temp = aules_temp.groupby('Aula')['CO2'].agg(['mean', 'min', 'max']).reset_index()
 
     # Round the numbers to 2 decimals
