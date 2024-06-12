@@ -28,7 +28,7 @@ def get_time_groupby_selection(kind):
     return select_groupby_var
 
 def get_festius_energy_selection(kind):
-    groupby_options = ['Show vacation days', 'Soften vacation days']
+    groupby_options = ['Include vacation days', 'Exclude vacation days']
     select_vacation = st.radio("Choose vacation filter:", groupby_options, key = f"""filter_vacation_days_{kind}""", horizontal = True)
     return select_vacation
 

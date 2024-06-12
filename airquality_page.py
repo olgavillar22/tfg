@@ -19,7 +19,7 @@ def main():
     In this section, you will find an analysis of various air quality parameters in the classrooms at ETSAB. The results are encapsulated in different tabs, which you can access by clicking on each of them.
     """)
 
-    temp, co2, hum, classs, summary = st.tabs(['Temperature', 'Concentration of CO2', 'Percentage of humidity', 'Detailed classroom comparison', 'Quality metrics summary'])
+    temp, co2, hum, classs, summary = st.tabs(['Temperature', 'CO₂ Concentration', 'Percentage of humidity', 'Detailed classroom comparison', 'Quality metrics summary'])
 
     with temp:
         temperature_page.main()

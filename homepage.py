@@ -22,8 +22,8 @@ def main():
     - **Energy Consumption:** This section examines the energy usage of the three ETSAB buildings to identify patterns and potential areas for improvement in energy efficiency. Additionally, energy data is compared to the temperature of some classrooms to check for a relationship.
     - **Air Quality:** This larger section analyzes the air quality of classrooms in building A (Segarra) using data from their sensors. The analysis includes three variables: Temperature, CO₂ concentration, and humidity percentage. The section is further divided into five subsections:
         - **Temperature:** Analysis of temperature data to ensure a comfortable learning environment.
-        - **CO₂ Concentration:** Monitoring CO₂ levels to assess air quality and ventilation effectiveness.
-        - **Humidity:** Evaluating humidity levels to maintain a healthy indoor climate.
+        - **CO₂ Concentration:** Monitoring CO₂ concentrations to assess air quality and ventilation effectiveness.
+        - **Humidity:** Evaluating humidity percentages to maintain a healthy indoor climate.
         - **Detailed Classroom Comparison:** Obtain detailed data of the desired classes for all three variables.
         - **Quality Metrics Summary:** Get final quality metrics based on all three variables to evaluate and compare all the classes in building A.
     """)

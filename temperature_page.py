@@ -24,7 +24,7 @@ def plot_diff_floors_temperatura():
     ).add_selection(selector_month).transform_filter(selector_month).properties(height = 200, title = 'Average difference between each floor temperature and the mean')
 
     bar_chart_means = alt.Chart(mean_monthly_temp).mark_bar(color = '#4a646c').encode(
-        x=alt.X('Date:O', title = 'Month'),
+        x=alt.X('Date:O', title = 'Month', axis=alt.Axis(labelAngle=0)),
         y=alt.Y('mean_monthly_temp:Q', title ='Avg temperature (℃)'),
         opacity = alt.condition(selector_month, alt.value(1), alt.value(0.5))
     ).add_selection(selector_month).properties(height = 100, title = 'Average monthly temperature of all classrooms of building A')
@@ -44,11 +44,21 @@ def plot_floors_temp():
         temp = groupby_time_planta(temp, select_groupby_var)
         temp['Date'] = temp['Date'].dt.to_timestamp()
     with col2:
-        # Multi-select for floor selection
+        # Function to convert floor numbers to ordinal strings
+        def ordinal(n):
+            return "%d%s" % (n, "tsnrhtdd"[(n//10%10!=1)*(n%10<4)*n%10::4])
+
+        # Create a mapping for floor numbers to ordinal strings
+        floor_mapping = {floor: ordinal(floor) for floor in temp['Planta'].unique()}
+
+        # Map the floor numbers to ordinal strings
+        temp['Planta_str'] = temp['Planta'].map(floor_mapping)
+
+        # Multi-select for floor selection with ordinal labels
         selected_floors = st.multiselect(
             "Select Floors to Highlight",
-            options=temp['Planta'].unique(),
-            default=temp['Planta'].unique()
+            options=temp['Planta_str'].unique(),
+            default=temp['Planta_str'].unique()
         )
 
     # Filter data based on selected time interval
@@ -61,7 +71,7 @@ def plot_floors_temp():
         x = 'Date:T',
         y = alt.Y('avg_temp:Q', scale = alt.Scale(domain=[16, 32]), title = 'Temperature (℃)'),
         color=alt.Color('Planta:N', scale=palette_plantes, title='Plantes'),
-        opacity=alt.condition(alt.FieldOneOfPredicate(field='Planta', oneOf=selected_floors), alt.value(1), alt.value(0.2))
+        opacity=alt.condition(alt.FieldOneOfPredicate(field='Planta_str', oneOf=selected_floors), alt.value(1), alt.value(0.2))
     ).properties(title = 'Average temperature of the classes of different floors of building A')
 
     st.altair_chart(chart, use_container_width=True)
@@ -112,15 +122,22 @@ def heatmap_temperatures():
     with col1:
         # TEMPERATURA ALTA
         # Configure heatmap
-        heatmap = alt.Chart(source).mark_rect(color = 'red').encode(
-            x=alt.X('posicio:O', title='Class position'),
-            y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title = 'Floor'),
-            color = alt.Color('temp_excessiva_alta:Q', scale=alt.Scale(scheme='reds'), title = '% Hours temperature higher than comfort')
-        )
+        if select_radio == 'Whole year': #set a different domain
+            heatmap = alt.Chart(source).mark_rect(color = 'red').encode(
+                x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
+                y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title = 'Floor'),
+                color = alt.Color('temp_excessiva_alta:Q', scale=alt.Scale(scheme='reds'), title = '% Hours temperature higher than comfort')
+            )
+        else:
+            heatmap = alt.Chart(source).mark_rect(color = 'red').encode(
+                x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
+                y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title = 'Floor'),
+                color = alt.Color('temp_excessiva_alta:Q', scale=alt.Scale(scheme='reds', domain=[0,100]), title = '% Hours temperature higher than comfort')
+            )
 
         # Configure text
         text = alt.Chart(source).mark_text(baseline='middle').encode(
-            x=alt.X('posicio:O', title='Class position'),
+            x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title = 'Floor'),
             text = alt.Text('Aula:N'),
         )
@@ -136,15 +153,22 @@ def heatmap_temperatures():
     with col2:
         # TEMPERATURA BAIXA
         # Configure heatmap
-        heatmap2 = alt.Chart(source).mark_rect(color = 'red').encode(
-            x=alt.X('posicio:O', title='Class position'),
-            y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title = 'Floor'),
-            color = alt.Color('temp_excessiva_baixa:Q', title = '% Hours temperature lower than comfort')
-        )
+        if select_radio == 'Whole year': #set a different domain
+            heatmap2 = alt.Chart(source).mark_rect(color = 'red').encode(
+                x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
+                y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title = 'Floor'),
+                color = alt.Color('temp_excessiva_baixa:Q', title = '% Hours temperature lower than comfort')
+            )
+        else:
+            heatmap2 = alt.Chart(source).mark_rect(color = 'red').encode(
+                x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
+                y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title = 'Floor'),
+                color = alt.Color('temp_excessiva_baixa:Q', scale=alt.Scale(domain=[0,100]), title = '% Hours temperature lower than comfort')
+            )
 
         # Configure text
         text2 = alt.Chart(source).mark_text(baseline='middle').encode(
-            x=alt.X('posicio:O', title='Class position'),
+            x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title = 'Floor'),
             text = alt.Text('Aula:N'),
         )
@@ -165,10 +189,7 @@ def metrics_aules_temp():
 
     # Load and preprocess the data
     aules_temp = pd.read_csv('temperatureaulesETSAB2023_clean.csv')
-    grouped_temp = aules_temp.groupby('Aula')['Temperatura'].agg(['mean', 'min', 'max']).reset_index()
-
-    # Round the numbers to 2 decimals
-    grouped_temp = grouped_temp.round(2)
+    grouped_temp = aules_temp.groupby('Aula')['Temperatura'].agg(['mean', 'min', 'max']).round(2).reset_index()
 
     # Sorting options
     sort_order = st.selectbox("Sort order", ["Class position", "Colder to Warmer", "Warmer to Colder"])
@@ -203,8 +224,12 @@ def violinplot_floors():
     df = pd.read_csv('temperatureETSAB2023_clean.csv')
     fig = px.violin(df, y="avg_temp", x="Planta", color="Planta", box=True, labels={'Planta':'Floor', 'avg_temp':'Temperature (℃)'})
     fig.update_layout(title_text="Distribution of temperature in the different floors of building A")
+    # Remove the mode bar
+    config = {
+        'displayModeBar': False
+    }
 
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, config=config)
 
 
 def main():
@@ -223,11 +248,11 @@ def main():
     # Insights & Takeaways
     st.markdown("""
     <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
-        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways:</h4>
+        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
         <ul>
             <li>Classroom temperatures mostly fall outside the comfort zone.</li>
             <li>The temperature data shows clear seasonal variations, with temperatures rising above the comfort zone from June to October, indicating a warm problem in the periods where classes are being used.</li>
-            <li>Colder months present more temperatures inside the comfort zone, despite some values are extremely far (like December 4 reaching 31.6℃ and Marc 5 lowering to 9.45℃).</li>
+            <li>Colder months present more temperatures inside the comfort zone, despite some values are extremely far (like December 4 reaching 31.6℃ and March 5 lowering to 9.45℃).</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -240,7 +265,7 @@ def main():
      # Insights & Takeaways
     st.markdown("""
     <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
-        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways:</h4>
+        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
         <ul>
             <li>The temperature trends across all floors are remarkably consistent, with similar peaks and troughs.</li>
             <li>In spite of all floors having similar average temperature, floor 1 is always colder than the others.</li>
@@ -252,7 +277,7 @@ def main():
      # Insights & Takeaways
     st.markdown("""
     <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
-        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways:</h4>
+        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
         <ul>
             <li>All floors present similar temperature distributions, with peaks of density near 27℃ and 21℃.</li>
             <li>Floor 1 is slightly lower than the others, and floors 2 and 3 reach the highest maximum temperature.</li>
@@ -264,7 +289,7 @@ def main():
     # Insights & Takeaways
     st.markdown("""
     <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
-        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways:</h4>
+        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
         <ul>
             <li>Floor 1 consistently has temperatures below the building's average across all months, while Floor 4 has always higher temperatures.</li>
             <li>The differences approximately range from 1 degree colder to 0.6 degrees warmer, with floors 1 and 6 showing the most oscillation.</li>
@@ -273,12 +298,12 @@ def main():
 
     # Detailed Temperature Analysis
     st.markdown("<h4 >Temperature Quality Metric per Class</h4>", unsafe_allow_html=True)
-    st.write('The heatmaps below show the percentage of hours in 2023 that each class\' temperature was higher or lower than the comfort zone. It allows you to see the whole year data, removing the vacation days and weekends, or see the montly data with a slider to select the month.')
+    st.write('The heatmaps below show the percentage of hours in 2023 that each class\' temperature was higher or lower than the comfort zone. It allows you to see the whole year data, removing the vacation days and weekends, or see the montly data with a slider to select the month. Be careful with the color scale, as it changes when seeing the global year or monthly data, in order to be able to appreciate the variations between classes in the global data.')
     heatmap_temperatures()
     # Insights & Takeaways
     st.markdown("""
     <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
-        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways:</h4>
+        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
         <ul>
             <li>The lower floors in the building experience more cold, while the upper floors are warmer.</li>
             <li>Separating data per month changes a lot the localization of the most problematic classes. Meaning that a class being out of the comfort temperature does not remain constant during the whole year.</li>
@@ -290,7 +315,7 @@ def main():
     st.write("""
         <div style="padding: 15px; margin-top: 20px;">
             <h4 style="color: gray;">Additional Information:</h4>
-            <p style="color: gray;">In the energy graphics, the vacation days are the ones where there's no class or activity for the students, as there's no usage of the classrooms. So, the following dates are excluded from the air quality analysis:
+            <p style="color: gray;">In the temperature graphics, the vacation days are the ones where there's no class or activity for the students, as there's no usage of the classrooms. So, the following dates are excluded from the air quality analysis:
                 <br>
                 2023-09-25, 2023-10-12, 2023-11-01, 2023-12-06, 2023-12-07, 2023-12-08, 2023-12-23, 2023-12-24, 2023-12-25, 2023-12-26, 2023-12-27, 2023-12-28, 2023-12-29, 2023-12-30, 2023-12-31, 2023-01-01, 2023-01-02, 2023-01-03, 2023-01-04, 2023-01-05, 2023-01-06, 2023-01-07, 2023-01-08, 2023-01-09, 2023-01-10, 2023-04-01, 2023-04-02, 2023-04-03, 2023-04-04, 2023-04-05, 2023-04-06, 2023-04-07, 2023-04-08, 2023-04-09, 2023-04-10, 2023-05-01, 2023-09-11.
                 <br>

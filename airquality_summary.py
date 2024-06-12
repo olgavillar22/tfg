@@ -13,14 +13,14 @@ def heatmap_aules_quality_chart(source):
         # TEMPERATURA
         # Configure heatmap
         heatmap = alt.Chart(source).mark_rect().encode(
-            x=alt.X('posicio:O', title='Class position'),
+            x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
-            color = alt.Color('temp_excessiva:Q', title = 'Ratio of temperature deviation from comfort')
+            color = alt.Color('temp_excessiva:Q', scale = alt.Scale(scheme = 'reds', domain=[15,52]), title = 'Ratio of temperature deviation from comfort')
         )
 
         # Configure text
         text = alt.Chart(source).mark_text(baseline='middle').encode(
-            x=alt.X('posicio:O', title='Class position'),
+            x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
             text = alt.Text('Aula:N'),
         )
@@ -34,14 +34,14 @@ def heatmap_aules_quality_chart(source):
         # CO2
         # Configure heatmap
         heatmap2 = alt.Chart(source).mark_rect().encode(
-            x=alt.X('posicio:O', title='Class position'),
+            x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
-            color = alt.Color('co2_excessiu:Q', title = 'Ratio of CO₂ deviation from comfort')
+            color = alt.Color('co2_excessiu:Q', scale=alt.Scale(scheme='greens',domain=[0,7]), title = 'Ratio of CO₂ deviation from comfort')
         )
 
         # Configure text
         text2 = alt.Chart(source).mark_text(baseline='middle').encode(
-            x=alt.X('posicio:O', title='Class position'),
+            x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
             text = alt.Text('Aula:N'),
         )
@@ -55,14 +55,14 @@ def heatmap_aules_quality_chart(source):
         # HHUMITAT
         # Configure heatmap
         heatmap3 = alt.Chart(source).mark_rect().encode(
-            x=alt.X('posicio:O', title='Class position'),
+            x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
-            color = alt.Color('humitat_excessiva:Q', title = 'Ratio of humidity deviation from comfort')
+            color = alt.Color('humitat_excessiva:Q', scale=alt.Scale(domain=[0,16]), title = 'Ratio of humidity deviation from comfort')
         )
 
         # Configure text
         text3 = alt.Chart(source).mark_text(baseline='middle').encode(
-            x=alt.X('posicio:O', title='Class position'),
+            x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
             text = alt.Text('Aula:N'),
         )
@@ -103,14 +103,14 @@ def heatmap_quality_metrics(source):
         # TEMPERATURA
         # Configure heatmap
         heatmap = alt.Chart(source).mark_rect().encode(
-            x=alt.X('posicio:O', title='Class position'),
+            x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
-            color = alt.Color('Temperature_Quality:Q', title = 'Ratio of temperature deviation from comfort')
+            color = alt.Color('Temperature_Quality:Q', scale=alt.Scale(scheme='reds', domain=[0.12,0.32]), title = 'Ratio of temperature deviation from comfort')
         )
 
         # Configure text
         text = alt.Chart(source).mark_text(baseline='middle').encode(
-            x=alt.X('posicio:O', title='Class position'),
+            x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
             text = alt.Text('Aula:N'),
         )
@@ -124,14 +124,14 @@ def heatmap_quality_metrics(source):
         # CO2
         # Configure heatmap
         heatmap2 = alt.Chart(source).mark_rect().encode(
-            x=alt.X('posicio:O', title='Class position'),
+            x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
-            color = alt.Color('CO2_Quality:Q', title = 'Ratio of CO₂ deviation from comfort')
+            color = alt.Color('CO2_Quality:Q', scale=alt.Scale(scheme='greens', domain=[0,0.024]), title = 'Ratio of CO₂ deviation from comfort')
         )
 
         # Configure text
         text2 = alt.Chart(source).mark_text(baseline='middle').encode(
-            x=alt.X('posicio:O', title='Class position'),
+            x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
             text = alt.Text('Aula:N'),
         )
@@ -145,14 +145,14 @@ def heatmap_quality_metrics(source):
             # HHUMITAT
             # Configure heatmap
             heatmap3 = alt.Chart(source).mark_rect().encode(
-                x=alt.X('posicio:O', title='Class position'),
+                x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
                 y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
-                color = alt.Color('Humidity_Quality:Q', title = 'Ratio of humidity deviation from comfort')
+                color = alt.Color('Humidity_Quality:Q', scale = alt.Scale(domain=[0,0.028]), title = 'Ratio of humidity deviation from comfort')
             )
 
             # Configure text
             text3 = alt.Chart(source).mark_text(baseline='middle').encode(
-                x=alt.X('posicio:O', title='Class position'),
+                x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
                 y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
                 text = alt.Text('Aula:N'),
             )
@@ -184,7 +184,7 @@ def heatmap_aules_quality_metrics():
 def main():
     st.markdown("<h2>Classroom Quality Metrics</h2>", unsafe_allow_html=True)
     st.write("""
-    This section provides an overview of the air quality metrics for each classroom. We consider the percentage of hours each classroom is out of the comfort zone for various variables like temperature, humidity, and CO₂ levels.
+    This section provides an overview of the air quality metrics for each classroom. We consider the percentage of hours each classroom is out of the comfort zone for various variables like temperature, humidity, and CO₂ concentrations.
     """)
 
     st.write("""

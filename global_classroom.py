@@ -82,8 +82,6 @@ def dataclass_building_selection():
         select_radio = st.radio("Choose time aggregation:", groupby_options, key="time_agg_temp", horizontal=True)
 
         if select_radio == 'Show a month':
-            #slider_month = alt.binding_range(name='Month', min=1, max=12, step=1)
-            #selector_month = alt.selection_single(name="Select a month", fields=['Month'], bind=slider_month, init={'Month': 1})
             slider_month = st.slider("Select a month", 1, 12)
             filtered_aules_data = filtered_aules_data[filtered_aules_data['Month']==slider_month]
             filtered_data_quality = filtered_data_quality[filtered_data_quality['Month']==slider_month]
@@ -106,7 +104,7 @@ def dataclass_building_selection():
         # Define y-axis title based on the variable
         y_axis_title = {
             'Temperature': 'Temperature (°C)',
-            'CO2': 'CO2 Levels (ppm)',
+            'CO2': 'CO2 Concentrations (ppm)',
             'Humidity': 'Percentage of humidity'
         }
 
@@ -180,7 +178,10 @@ def dataclass_building_selection():
         aulas = melted_df['Aula'].unique()
         num_cols = 3  # Number of columns in the grid
         num_rows = (len(aulas) + num_cols - 1) // num_cols
-
+        # Remove the mode bar
+        config = {
+            'displayModeBar': False
+        }
         for row in range(num_rows):
             cols = st.columns(num_cols)
             for col in range(num_cols):
@@ -188,7 +189,7 @@ def dataclass_building_selection():
                 if index < len(aulas):
                     aula = aulas[index]
                     pie_chart = create_pie_chart(melted_df, aula)
-                    cols[col].plotly_chart(pie_chart, use_container_width=True)
+                    cols[col].plotly_chart(pie_chart, use_container_width=True, config=config)
 
 
 

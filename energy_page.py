@@ -26,11 +26,11 @@ def plot_energia_total():
     # Prepare the dataframe
     df = pd.DataFrame({
         'Percentage': [energiaA, energiaB, energiaC],
-        'Building': ['A (Segarra)', 'B', 'C (Codach)']
+        'Building': ['A (Segarra)', 'B', 'C (Coderch)']
     })
 
     # Define the color palette
-    color_palette = alt.Scale(domain=['A (Segarra)', 'B', 'C (Codach)'],
+    color_palette = alt.Scale(domain=['A (Segarra)', 'B', 'C (Coderch)'],
                               range=['#318ce7', '#1cac78', '#ad4379'])
 
     # Create the pie chart
@@ -56,7 +56,7 @@ def plot_energia():
     with col2:
         select_vacation = get_festius_energy_selection('energy')
 
-    if select_vacation == 'Show vacation days':
+    if select_vacation == 'Include vacation days':
         energia = get_energy_data(festius = True)
     else:
         energia = get_energy_data(festius = False)
@@ -68,7 +68,7 @@ def plot_energia():
     filtered_data = energia[(energia['Date'] >= start_date) & (energia['Date'] <= end_date)]
 
     # Melt the dataframe to long format for easier plotting with Altair
-    energia_melted = energia.melt('Date', var_name='Edifici', value_name='Value')
+    energia_melted = filtered_data.melt('Date', var_name='Edifici', value_name='Value')
 
     # Filter the data to include only the relevant categories
     filtered_energia = energia_melted[energia_melted['Edifici'].isin(['CS A', 'CS B', 'CS C', 'Electricitat Total'])]
@@ -162,7 +162,7 @@ def plot_temp_energy():
     # Energy consumption chart
     energy_chart = alt.Chart(energia).mark_line(color='red').encode(
         x='Date:T',
-        y=alt.Y('Electricitat Total:Q', axis=alt.Axis(title='Energy Consumption (kWh)', titleColor='red', orient='right')),
+        y=alt.Y('Electricitat Total:Q', axis=alt.Axis(title='Total Energy Consumption (kWh)', titleColor='red', orient='right')),
         tooltip=['Date:T', 'Electricitat Total:Q']
     ).properties(
         width=900,  # Width adjusted for larger display
@@ -189,14 +189,14 @@ def plot_week_seasonal_energy_trend():
     energia = pd.read_csv('energia_seasonalETSAB2023_clean.csv')
     color_palette = alt.Scale(domain=['Autumn', 'Winter', 'Spring', 'Summer', 'Vacation'], range=['#996600', '#4997d0', '#3cd070', '#f5c71a', '#ff55a3'])
 
-    building_options = ['A (Segarra)', 'B', 'C (Codach)', 'Total']
+    building_options = ['A (Segarra)', 'B', 'C (Coderch)', 'Total']
     select_building = st.radio("Choose building:", building_options, key = "filter_building_seasonal", horizontal = True)
 
     # Map building names to corresponding variables
     building_variable_mapping = {
         'A (Segarra)': 'CS A',
         'B': 'CS B',
-        'C (Codach)': 'CS C',
+        'C (Coderch)': 'CS C',
         'Total': 'Electricitat Total'
     }
 
@@ -204,12 +204,12 @@ def plot_week_seasonal_energy_trend():
 
     day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     chart = alt.Chart(energia).mark_line().encode(
-        x=alt.X('hour_of_day:O', title='hour of the day'),
-        y=alt.Y(building_variable + ':Q'),  # Dynamically change the variable based on the selected building
+        x=alt.X('hour_of_day:O', title='hour of the day', axis=alt.Axis(labelAngle=0)),
+        y=alt.Y(building_variable + ':Q', scale=alt.Scale(domain=[0, 310])),  # Dynamically change the variable based on the selected building
         color=alt.Color('season:N', scale=color_palette)
     ).properties(
-        width=150,
-        height=200
+        width=175,
+        height=300
     ).facet(
         column=alt.Column('day_of_week:N', sort=day_order, title='day of week'),  # Sort days of the week
         title=f'Energy Consumption of {select_building} by Season for Each Day of the Week',
@@ -232,20 +232,20 @@ def main():
     # Introduction
     st.markdown("<h2>Energy Consumption Analysis of ETSAB Buildings in 2023</h2>", unsafe_allow_html=True)
     st.write("""
-    In this section, the energy consumption of the ETSAB buildings during 2023 will be analyzed using data from the energy meters. The ETSAB has three buildings: A (Segarra), B, and C (Codach). It is worth mentioning that the energy consumption of building A only refers to the lighting mechanism, as the heating works by gas, while the consumption in the other buildings includes heating.
+    In this section, the energy consumption of the ETSAB buildings during 2023 will be analyzed using data from the energy meters. The ETSAB has three buildings: A (Segarra), B, and C (Coderch). It is worth mentioning that the energy consumption of building A only refers to the lighting mechanism, as the heating works by gas, while the consumption in the other buildings includes heating.
     """)
 
     # Initial Analysis
     st.markdown("<h4 >Initial Analysis</h4>", unsafe_allow_html=True)
-    st.write("""To start, we'll take a look at the evolution of energy consumption in 2023 comparing the three buildings. For better understanding, you can adjust the time aggregation to see more or less detailed data. Additionally, softening the vacation days ensures that they do not alter the global trend. So, the softening button removes the weekends and vacation days data, which are specified in the Additional Information section at the end of the page, so that the chart autocompletes them continuing the line of the labor days. Furthermore, you can filter the start and end dates of the period you want to examine in detail.
+    st.write("""To start, we'll take a look at the evolution of energy consumption in 2023 comparing the three buildings. For better understanding, you can adjust the time aggregation to see more or less detailed data. Additionally, excluding the vacation days ensures that they do not alter the global trend. So, the excluding button removes the weekends and vacation days data, which are specified in the Additional Information section at the end of the page, so that the chart autocompletes them continuing the line of the labor days. Furthermore, you can filter the start and end dates of the period you want to examine in detail.
     """)
     plot_energia()
     # Insights & Takeaways
     st.markdown("""
     <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
-      <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways:</h4>
+      <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
       <ul>
-          <li>Despite building A electricity is only consumed by lightening and not heating, it is the most consuming building among all.</li>
+          <li>Despite building A electricity is only used for illumination and not for heating, it is the most consuming building among all.</li>
           <li>A clear decrease on weekends and vacation days can be observed, proportionally to the normal consumption of each building.</li>
           <li>Buildings A and C present a decrease of energy consumption in warm months, while B remains practically constant (with exception of August).</li>
       </ul>
@@ -280,7 +280,7 @@ def main():
     # Insights & Takeaways
     st.markdown("""
     <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
-        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways:</h4>
+        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
         <ul>
             <li>In vacation and Summer days, a huge decrease of consumption can be appreciated in all the buildings. </li>
         </ul>
@@ -296,7 +296,7 @@ def main():
     # Insights & Takeaways
     st.markdown("""
     <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
-        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways:</h4>
+        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
         <ul>
             <li>It can clearly be seen that as more difference of indoor-outdoor temperature, more energy consumption. </li>
             <li>it is curious to see that the mean temperature indoors is always highest than the outdoors temperature.</li>
