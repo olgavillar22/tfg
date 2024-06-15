@@ -33,7 +33,7 @@ def dataclass_building_selection():
 
     # Initialize session state for selected classes
     if 'selected_classes' not in st.session_state:
-        st.session_state.selected_classes = []
+        st.session_state.selected_classes = ['A-11']
 
     # Get unique floors and positions
     floors = sorted(finestres['planta'].unique(), reverse=True)
