@@ -87,7 +87,7 @@ def dataclass_building_selection():
     # Plot the data
     if not filtered_aules_data.empty:
         # Define a balanced color palette
-        balanced_colors = ['#ff9933', '#0070ff', '#ff43a4', '#8db600', '#a75502', '#056608', '#e4d96f', '#bd3000', '#cc5500', '#ff66cc']
+        balanced_colors = ['#0070ff', '#ff43a4', '#ff9933', '#8db600', '#a75502', '#056608', '#e4d96f', '#bd3000', '#cc5500', '#ff66cc']
 
         # Assign colors to selected classes
         color_mapping = {aula: balanced_colors[i % len(balanced_colors)] for i, aula in enumerate(st.session_state.selected_classes)}
