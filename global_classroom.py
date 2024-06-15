@@ -110,7 +110,7 @@ def dataclass_building_selection():
 
         chart = alt.Chart(merged_data).mark_point(filled=True, size=3).encode(
             x='Date:T',
-            y=alt.Y(f'{variable}:Q', title=y_axis_title[variable]),
+            y=alt.Y(f'{variable}:Q', title=y_axis_title[variable], scale=alt.Scale(domain=[0,35])),
             color=alt.Color('Aula:N', scale=alt.Scale(domain=list(color_mapping.keys()), range=list(color_mapping.values())), legend=alt.Legend(title="Classrooms"))
         ).properties(
             title=f'{variable} of the classes of building A with the comfort'
@@ -131,7 +131,6 @@ def dataclass_building_selection():
         )
 
         combined_chart = comfort + chart
-        #combined_chart = (comfort + chart).add_selection(selector_month).transform_filter(selector_month)
 
         st.altair_chart(combined_chart, use_container_width=True)
 
