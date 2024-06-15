@@ -3,6 +3,8 @@ import altair as alt
 import pandas as pd
 import plotly.express as px
 
+from common_functions import *
+
 
 def normalize_percentages(df, groupby_cols):
     df['Total'] = df.groupby(groupby_cols)['Percentage'].transform('sum')
@@ -15,34 +17,23 @@ def normalize_percentages(df, groupby_cols):
 def dataclass_building_selection():
     finestres = pd.read_csv('finestresaulesETSAB2023_clean.csv')
     aules_data = {
-            'Temperature': pd.read_csv('temperatureaulesETSAB2023_clean.csv'),
-            'CO2': pd.read_csv('co2aulesETSAB2023_clean.csv'),
-            'Humidity': pd.read_csv('humidityaulesETSAB2023_clean.csv')
-        }
+        'Temperature': get_tempaules_data(),
+        'CO2': get_co2aules_data(),
+        'Humidity': get_humidityaules_data()
+    }
     aules_data['Temperature'] = aules_data['Temperature'].rename(columns={'Temperatura':'Temperature'})
     quality_data = {
-            'Temperature': pd.read_csv('piequalitytemp.csv'),
-            'CO2': pd.read_csv('piequalityco2.csv'),
-            'Humidity': pd.read_csv('piequalityhum.csv')
-        }
+        'Temperature': pd.read_csv('piequalitytemp.csv'),
+        'CO2': pd.read_csv('piequalityco2.csv'),
+        'Humidity': pd.read_csv('piequalityhum.csv')
+    }
     for var in aules_data:
         aules_data[var]['Date'] = pd.to_datetime(aules_data[var]['Date'], format='%Y-%m-%d %H:%M:%S')
         aules_data[var]['Month'] = aules_data[var]['Date'].dt.month
 
-    # Define the color mapping
-    color_mapping = {
-        'A-11': '#318ce7', 'A-12': '#e74c3c', 'A-13': '#2ecc71', 'A-14': '#f1c40f',
-        'A-21': '#3498db', 'A-22': '#9b59b6', 'A-23': '#e67e22', 'A-24': '#1abc9c',
-        'A-31': '#d35400', 'A-32': '#34495e', 'A-33': '#16a085', 'A-34': '#2980b9',
-        'A-35': '#8e44ad', 'A-36': '#f39c12', 'A-41': '#c0392b', 'A-42': '#27ae60',
-        'A-43': '#d35400', 'A-44': '#8e44ad', 'A-51': '#2ecc71', 'A-52': '#3498db',
-        'A-53': '#f1c40f', 'A-54': '#1abc9c', 'A-55': '#e74c3c', 'A-56': '#34495e',
-        'A-61': '#9b59b6', 'A-62': '#16a085'
-    }
-
     # Initialize session state for selected classes
     if 'selected_classes' not in st.session_state:
-        st.session_state.selected_classes = ['A-11']
+        st.session_state.selected_classes = []
 
     # Get unique floors and positions
     floors = sorted(finestres['planta'].unique(), reverse=True)
@@ -68,7 +59,14 @@ def dataclass_building_selection():
                     )
 
         # Update session state with selected classes
-        st.session_state.selected_classes = [aula for aula, selected in checkbox_states.items() if selected]
+        selected_classes = [aula for aula, selected in checkbox_states.items() if selected]
+
+        # Limit the number of selected classes to 5
+        if len(selected_classes) > 5:
+            st.error("You can select a maximum of 5 classes.")
+            selected_classes = selected_classes[:5]
+
+        st.session_state.selected_classes = selected_classes
 
     with col2:
         # Variable selection
@@ -83,12 +81,17 @@ def dataclass_building_selection():
 
         if select_radio == 'Show a month':
             slider_month = st.slider("Select a month", 1, 12)
-            filtered_aules_data = filtered_aules_data[filtered_aules_data['Month']==slider_month]
-            filtered_data_quality = filtered_data_quality[filtered_data_quality['Month']==slider_month]
+            filtered_aules_data = filtered_aules_data[filtered_aules_data['Month'] == slider_month]
+            filtered_data_quality = filtered_data_quality[filtered_data_quality['Month'] == slider_month]
 
-
-    # Plot the temperature data
+    # Plot the data
     if not filtered_aules_data.empty:
+        # Define a balanced color palette
+        balanced_colors = ['#ff9933', '#0070ff', '#ff43a4', '#8db600', '#a75502', '#056608', '#e4d96f', '#bd3000', '#cc5500', '#ff66cc']
+
+        # Assign colors to selected classes
+        color_mapping = {aula: balanced_colors[i % len(balanced_colors)] for i, aula in enumerate(st.session_state.selected_classes)}
+
         # Create a new DataFrame for the color legend to map classes to their colors
         color_df = pd.DataFrame({
             'Aula': list(color_mapping.keys()),
@@ -97,9 +100,6 @@ def dataclass_building_selection():
 
         # Merge the filtered data with the color DataFrame to maintain color consistency
         merged_data = pd.merge(filtered_aules_data, color_df, on='Aula', how='left')
-
-        # Get the selected class colors
-        selected_colors = {aula: color_mapping[aula] for aula in st.session_state.selected_classes}
 
         # Define y-axis title based on the variable
         y_axis_title = {
@@ -111,10 +111,11 @@ def dataclass_building_selection():
         chart = alt.Chart(merged_data).mark_point(filled=True, size=3).encode(
             x='Date:T',
             y=alt.Y(f'{variable}:Q', title=y_axis_title[variable]),
-            color=alt.Color('Aula:N', scale=alt.Scale(domain=list(selected_colors.keys()), range=list(selected_colors.values())))
+            color=alt.Color('Aula:N', scale=alt.Scale(domain=list(color_mapping.keys()), range=list(color_mapping.values())), legend=alt.Legend(title="Classrooms"))
         ).properties(
             title=f'{variable} of the classes of building A with the comfort'
         )
+
 
         # Define comfort ranges for each variable
         comfort_ranges = {
@@ -123,7 +124,7 @@ def dataclass_building_selection():
             'Humidity': {'min': 'min_humidity', 'max': 'max_humidity'}
         }
 
-        comfort = alt.Chart(merged_data).mark_area(opacity=0.3).encode(
+        comfort = alt.Chart(filtered_aules_data).mark_area(opacity=0.3).encode(
             alt.X('Date:T'),
             alt.Y(comfort_ranges[variable]['min']),
             alt.Y2(comfort_ranges[variable]['max'])

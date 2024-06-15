@@ -15,7 +15,7 @@ def heatmap_aules_quality_chart(source):
         heatmap = alt.Chart(source).mark_rect().encode(
             x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
-            color = alt.Color('temp_excessiva:Q', scale = alt.Scale(scheme = 'reds', domain=[15,52]), title = 'Ratio of temperature deviation from comfort')
+            color = alt.Color('temp_excessiva:Q', scale = alt.Scale(scheme = 'reds', domain=[15,62]), title = '% of temperatures out of comfort')
         )
 
         # Configure text
@@ -27,7 +27,7 @@ def heatmap_aules_quality_chart(source):
 
         # Draw the chart
         chart1 = heatmap + text
-        chart1 = chart1.configure_legend(orient='bottom',labelFontSize=10,titleFontSize=10).properties(width = 250, height = 500, title = '% Times out of comfort temperature in 2023').configure_title(fontSize=13).configure_axis(labelFontSize=10,titleFontSize=10)
+        chart1 = chart1.configure_legend(orient='bottom',labelFontSize=10,titleFontSize=10).properties(width = 250, height = 500, title = '% Class hours out of comfort temperature in 2023').configure_title(fontSize=13).configure_axis(labelFontSize=10,titleFontSize=10)
         st.altair_chart(chart1, use_container_width=True, theme='streamlit')
 
     with col2:
@@ -36,7 +36,7 @@ def heatmap_aules_quality_chart(source):
         heatmap2 = alt.Chart(source).mark_rect().encode(
             x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
-            color = alt.Color('co2_excessiu:Q', scale=alt.Scale(scheme='greens',domain=[0,7]), title = 'Ratio of CO₂ deviation from comfort')
+            color = alt.Color('co2_excessiu:Q', scale=alt.Scale(scheme='greens',domain=[0,8]), title = '% of CO₂ out of comfort')
         )
 
         # Configure text
@@ -48,7 +48,7 @@ def heatmap_aules_quality_chart(source):
 
         # Draw the chart
         chart2 = heatmap2 + text2
-        chart2 = chart2.configure_legend(orient='bottom',labelFontSize=10,titleFontSize=10).properties(width = 250, height = 500, title = '% Times out of comfort CO₂ in 2023').configure_title(fontSize=13).configure_axis(labelFontSize=10,titleFontSize=10)
+        chart2 = chart2.configure_legend(orient='bottom',labelFontSize=10,titleFontSize=10).properties(width = 250, height = 500, title = '% Class hours out of comfort CO₂ in 2023').configure_title(fontSize=13).configure_axis(labelFontSize=10,titleFontSize=10)
         st.altair_chart(chart2, use_container_width=True, theme='streamlit')
 
     with col3:
@@ -57,7 +57,7 @@ def heatmap_aules_quality_chart(source):
         heatmap3 = alt.Chart(source).mark_rect().encode(
             x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
-            color = alt.Color('humitat_excessiva:Q', scale=alt.Scale(domain=[0,16]), title = 'Ratio of humidity deviation from comfort')
+            color = alt.Color('humitat_excessiva:Q', scale=alt.Scale(domain=[0,24.5]), title = '% of humidity out of comfort')
         )
 
         # Configure text
@@ -69,7 +69,7 @@ def heatmap_aules_quality_chart(source):
 
         # Draw the chart
         chart3 = heatmap3 + text3
-        chart3 = chart3.configure_legend(orient='bottom', labelFontSize=10,titleFontSize=10).properties(width = 250, height = 500, title = '% Times out of comfort humidity in 2023').configure_title(fontSize=13).configure_axis(labelFontSize=10,titleFontSize=10)
+        chart3 = chart3.configure_legend(orient='bottom', labelFontSize=10,titleFontSize=10).properties(width = 250, height = 500, title = '% Class hours out of comfort humidity in 2023').configure_title(fontSize=13).configure_axis(labelFontSize=10,titleFontSize=10)
         st.altair_chart(chart3, use_container_width=True, theme='streamlit')
 
 @st.experimental_fragment
@@ -78,7 +78,7 @@ def heatmap_aules_quality():
     select_epoch_var= st.radio("Choose the time aggregation", groupby_options, key = "filter_epoch_heatmap", horizontal = True)
 
     if select_epoch_var == 'All year':
-        source = pd.read_csv('qualitat_aules_globalnovacation.csv')
+        source = get_qualitataulesnovacation_data()
         heatmap_aules_quality_chart(source)
 
     elif select_epoch_var == 'Q1 (september - january)':
@@ -105,7 +105,7 @@ def heatmap_quality_metrics(source):
         heatmap = alt.Chart(source).mark_rect().encode(
             x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
-            color = alt.Color('Temperature_Quality:Q', scale=alt.Scale(scheme='reds', domain=[0.12,0.32]), title = 'Ratio of temperature deviation from comfort')
+            color = alt.Color('Temperature_Quality:Q', scale=alt.Scale(scheme='reds', domain=[0.12,0.32]), title = 'Ratio temperature deviation from comfort')
         )
 
         # Configure text
@@ -117,7 +117,7 @@ def heatmap_quality_metrics(source):
 
         # Draw the chart
         chart1 = heatmap + text
-        chart1 = chart1.configure_legend(orient='bottom',labelFontSize=10,titleFontSize=10).properties(width = 250, height = 500, title = 'Quality of classes based on temperature in 2023').configure_title(fontSize=13).configure_axis(labelFontSize=10,titleFontSize=10)
+        chart1 = chart1.configure_legend(orient='bottom',labelFontSize=10,titleFontSize=10).properties(width = 250, height = 500, title = 'Temperature deviation from comfort in 2023').configure_title(fontSize=13).configure_axis(labelFontSize=10,titleFontSize=10)
         st.altair_chart(chart1, use_container_width=True, theme='streamlit')
 
     with col2:
@@ -138,7 +138,7 @@ def heatmap_quality_metrics(source):
 
         # Draw the chart
         chart2 = heatmap2 + text2
-        chart2 = chart2.configure_legend(orient='bottom',labelFontSize=10,titleFontSize=10).properties(width = 250, height = 500, title = 'Quality of classes based on CO₂ in 2023').configure_title(fontSize=13).configure_axis(labelFontSize=10,titleFontSize=10)
+        chart2 = chart2.configure_legend(orient='bottom',labelFontSize=10,titleFontSize=10).properties(width = 250, height = 500, title = 'CO₂ deviation from comfort in 2023').configure_title(fontSize=13).configure_axis(labelFontSize=10,titleFontSize=10)
         st.altair_chart(chart2, use_container_width=True, theme='streamlit')
 
         with col3:
@@ -159,7 +159,7 @@ def heatmap_quality_metrics(source):
 
             # Draw the chart
             chart3 = heatmap3 + text3
-            chart3 = chart3.configure_legend(orient='bottom', labelFontSize=10,titleFontSize=10).properties(width = 250, height = 500, title = 'Quality of classes based on humidity in 2023').configure_title(fontSize=13).configure_axis(labelFontSize=10,titleFontSize=10)
+            chart3 = chart3.configure_legend(orient='bottom', labelFontSize=10,titleFontSize=10).properties(width = 250, height = 500, title = 'Humidity deviation from comfort in 2023').configure_title(fontSize=13).configure_axis(labelFontSize=10,titleFontSize=10)
             st.altair_chart(chart3, use_container_width=True, theme='streamlit')
 
 

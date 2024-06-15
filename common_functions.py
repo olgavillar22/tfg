@@ -53,9 +53,46 @@ def get_time_filter(kind):
     return start_date, end_date
 
 
+@st.cache_data
 def get_temperatureA_data():
     # Dades de temperatura de l'edifici A per plantes
     temp = pd.read_csv('temperatureETSAB2023_clean.csv')
     temp['Date'] = pd.to_datetime(temp['Date'], format='%Y-%m-%d %H:%M:%S')
 
     return temp
+
+
+@st.cache_data
+def get_co2novacation_data():
+    df = pd.read_csv('co2novacation.csv')
+    return df
+
+
+@st.cache_data
+def get_qualitataules_data():
+    df = pd.read_csv('qualitat_aules.csv')
+    return df
+
+
+@st.cache_data
+def get_qualitataulesnovacation_data():
+    df = pd.read_csv('qualitat_aules_globalnovacation.csv')
+    return df
+
+
+@st.cache_data
+def get_co2aules_data():
+    df = pd.read_csv('co2aulesETSAB2023_clean.csv')
+    return df
+
+
+@st.cache_data
+def get_tempaules_data():
+    df = pd.read_csv('temperatureaulesETSAB2023_clean.csv')
+    return df
+
+
+@st.cache_data
+def get_humidityaules_data():
+    df = pd.read_csv('humidityaulesETSAB2023_clean.csv')
+    return df

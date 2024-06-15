@@ -6,7 +6,6 @@ import plotly.express as px
 from common_functions import *
 
 
-@st.cache_data
 def plot_co2_aules():
     aules_co2 = pd.read_csv('co2subsampledETSAB2023_clean.csv')
 
@@ -34,7 +33,7 @@ def plot_co2_aules():
 
 
 def violinplot_floors():
-    df = pd.read_csv('co2novacation.csv')
+    df = get_co2novacation_data()
     fig = px.violin(df, y="CO2", x="planta", color="planta", box=True, labels={'planta':'Floor', 'CO2':'CO₂'})
     fig.update_layout(title_text="Distribution of CO₂ concentration in floors of building A")
     # Remove the mode bar
@@ -57,7 +56,7 @@ def co2_during_day():
 
 
 def boxplot_finestres():
-    co2_aulesA2 = pd.read_csv('co2novacation.csv')
+    co2_aulesA2 = get_co2novacation_data()
 
     finestres = pd.DataFrame(data={'Aula': ['A-11','A-12','A-13','A-14','A-21','A-22','A-23','A-24','A-31','A-32',
     'A-33','A-34','A-35','A-36','A-41','A-42','A-43','A-44','A-51','A-52','A-53','A-54','A-55','A-56','A-61','A-62'],
@@ -82,8 +81,8 @@ def boxplot_finestres():
 
 @st.experimental_fragment
 def heatmap_co2():
-    sourcemonth = pd.read_csv('qualitat_aules.csv')
-    sourceyear = pd.read_csv('qualitat_aules_globalnovacation.csv')
+    sourcemonth = get_qualitataules_data()
+    sourceyear = get_qualitataulesnovacation_data()
 
     groupby_options = ['Whole year', 'Group by month']
     select_radio = st.radio("Choose time aggregation:", groupby_options, key = "time_agg_co2", horizontal = True)
@@ -123,7 +122,7 @@ def metrics_aules_co2():
     st.write('**Ranking: CO₂ Statistics for Each Class**')
 
     # Load and preprocess the data
-    aules_temp = pd.read_csv('co2aulesETSAB2023_clean.csv')
+    aules_temp = get_co2aules_data()
     grouped_temp = aules_temp.groupby('Aula')['CO2'].agg(['mean', 'min', 'max']).round(2).reset_index()
 
     # Sorting options
@@ -194,23 +193,6 @@ def main():
     </div>
     """, unsafe_allow_html=True)
 
-    # CO₂ Variation during the Day
-    st.markdown("<h4 >CO₂ Variation during the Day</h4>", unsafe_allow_html=True)
-    st.write("""
-    This chart displays the variation in CO₂ concentration throughout the day for each day of the week. Understanding daily patterns can help identify times when air quality might be at its worst and require intervention. Vacation days have been excluded from this analysis.
-    """)
-    co2_during_day()
-    # Insights & Takeaways
-    st.markdown("""
-    <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
-        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
-        <ul>
-            <li>In labor days, class hours can clearly be appreciated through CO₂ concentration.</li>
-            <li>On Mondays and Tuesdays, there's higher CO₂ concentration during class hours, which might be related to class attendance.</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
-
     # Boxplot of CO₂ Levels by Windows
     st.markdown("<h4 >CO₂ Concentration by Number of Windows</h4>", unsafe_allow_html=True)
     st.write("""
@@ -226,6 +208,23 @@ def main():
         <ul>
             <li>Classrooms with four windows (also indicating smaller room size) tend to have higher CO₂ concentrations, indicating poorer air quality.</li>
             <li>Surprisingly, classrooms with six windows present higher CO₂ concentration levels than the ones with five windows, which should be related to class attendance.</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # CO₂ Variation during the Day
+    st.markdown("<h4 >CO₂ Variation during the Day</h4>", unsafe_allow_html=True)
+    st.write("""
+    This chart displays the variation in CO₂ concentration throughout the day for each day of the week. Understanding daily patterns can help identify times when air quality might be at its worst and require intervention. Vacation days have been excluded from this analysis.
+    """)
+    co2_during_day()
+    # Insights & Takeaways
+    st.markdown("""
+    <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
+        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
+        <ul>
+            <li>In labor days, class hours can clearly be appreciated through CO₂ concentration.</li>
+            <li>On Mondays and Tuesdays, there's higher CO₂ concentration during class hours, which might be related to class attendance.</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)

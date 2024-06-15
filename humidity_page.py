@@ -6,7 +6,6 @@ import plotly.express as px
 from common_functions import *
 
 
-@st.cache_data
 def plot_humidity_aules():
     aules_hum = pd.read_csv('humiditysubsampledETSAB2023_clean.csv')
 
@@ -46,8 +45,8 @@ def violinplot_floors():
 
 @st.experimental_fragment
 def heatmap_hum():
-    sourcemonth = pd.read_csv('qualitat_aules.csv')
-    sourceyear = pd.read_csv('qualitat_aules_globalnovacation.csv')
+    sourcemonth = get_qualitataules_data()
+    sourceyear = get_qualitataulesnovacation_data()
 
     groupby_options = ['Whole year', 'Group by month']
     select_radio = st.radio("Choose time aggregation:", groupby_options, key = "time_agg_hum", horizontal = True)
@@ -165,7 +164,7 @@ def metrics_aules_hum():
     st.write('**Ranking: Humidity Statistics for Each Class**')
 
     # Load and preprocess the data
-    aules_temp = pd.read_csv('humidityaulesETSAB2023_clean.csv')
+    aules_temp = get_humidityaules_data()
     grouped_temp = aules_temp.groupby('Aula')['Humidity'].agg(['mean', 'min', 'max']).reset_index().round(2).reset_index()
 
     # Sorting options

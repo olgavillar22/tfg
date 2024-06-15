@@ -106,8 +106,8 @@ def plot_temperatura_aules():
 
 @st.experimental_fragment
 def heatmap_temperatures():
-    sourcemonth = pd.read_csv('qualitat_aules.csv')
-    sourceyear = pd.read_csv('qualitat_aules_globalnovacation.csv')
+    sourcemonth = get_qualitataules_data()
+    sourceyear = get_qualitataulesnovacation_data()
 
     groupby_options = ['Whole year', 'Group by month']
     select_radio = st.radio("Choose time aggregation:", groupby_options, key = "time_agg", horizontal = True)
@@ -188,7 +188,7 @@ def metrics_aules_temp():
     st.write('**Ranking: Temperature Statistics for Each Class**')
 
     # Load and preprocess the data
-    aules_temp = pd.read_csv('temperatureaulesETSAB2023_clean.csv')
+    aules_temp = get_tempaules_data()
     grouped_temp = aules_temp.groupby('Aula')['Temperatura'].agg(['mean', 'min', 'max']).round(2).reset_index()
 
     # Sorting options
