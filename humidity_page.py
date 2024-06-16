@@ -172,9 +172,9 @@ def metrics_aules_hum():
 
     # Sort the DataFrame based on the user's selection
     if sort_order == "More to Less Humid":
-     grouped_temp = grouped_temp.sort_values(by='mean', ascending=True)
-    elif sort_order == "Less to More Humid":
      grouped_temp = grouped_temp.sort_values(by='mean', ascending=False)
+    elif sort_order == "Less to More Humid":
+     grouped_temp = grouped_temp.sort_values(by='mean', ascending=True)
     else:
      grouped_temp = grouped_temp.sort_values(by='Aula', ascending=True)
 
