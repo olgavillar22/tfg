@@ -94,21 +94,18 @@ def heatmap_co2():
         selector_month = alt.selection_single(name="Select a month", fields=['Month'], bind=slider_month, init={'Month': 1})
     col1, col2 = st.columns(2)
 
-    # Configure heatmap
     heatmap = alt.Chart(source).mark_rect(color = 'red').encode(
         x=alt.X('posicio:O', title = 'Class position', axis=alt.Axis(labelAngle=0)),
         y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
         color = alt.Color('co2_excessiu:Q', scale=alt.Scale(scheme='reds', domain=[0,8.1]), title='% Hours CO₂ out Comfort')
     )
 
-    # Configure text
     text = alt.Chart(source).mark_text(baseline='middle').encode(
         x=alt.X('posicio:O', title ='Class position', axis=alt.Axis(labelAngle=0)),
         y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
         text = alt.Text('Aula:N'),
     )
 
-    # Draw the chart
     if select_radio == 'Whole year':
         chart1 = (heatmap + text)
     else:
@@ -121,11 +118,9 @@ def heatmap_co2():
 def metrics_aules_co2():
     st.write('**Ranking: CO₂ Statistics for Each Class**')
 
-    # Load and preprocess the data
     aules_temp = get_co2aules_data()
     grouped_temp = aules_temp.groupby('Aula')['CO2'].agg(['mean', 'min', 'max']).round(2).reset_index()
 
-    # Sorting options
     sort_order = st.selectbox("Sort order", ["Class position", "Healthier to Unhealthier", "Unhealtier to Healthier"], key = '111')
 
     # Sort the DataFrame based on the user's selection
@@ -136,7 +131,6 @@ def metrics_aules_co2():
     else:
      grouped_temp = grouped_temp.sort_values(by='Aula', ascending=True)
 
-    # Display the metrics using st.expander to save space
     for _, row in grouped_temp.iterrows():
         aula = row['Aula']
         mean_temp = row['mean']

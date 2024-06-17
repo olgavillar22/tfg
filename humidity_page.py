@@ -67,21 +67,18 @@ def heatmap_hum():
                 color = alt.Color('humitat_alta:Q', scale=alt.Scale(scheme='reds'), title = '% Hours humidity higher than comfort')
             )
         else:
-            # Configure heatmap
             heatmap = alt.Chart(source).mark_rect(color = 'red').encode(
                 x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
                 y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
                 color = alt.Color('humitat_alta:Q', scale=alt.Scale(scheme='reds', domain=[0,34]), title = '% Hours humidity higher than comfort')
             )
 
-        # Configure text
         text = alt.Chart(source).mark_text(baseline='middle').encode(
             x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
             text = alt.Text('Aula:N'),
         )
 
-        # Draw the chart
         if select_radio == 'Whole year':
             chart1 = (heatmap + text)
         else:
@@ -90,7 +87,6 @@ def heatmap_hum():
         st.altair_chart(chart1, use_container_width=True, theme='streamlit')
 
     with col2:
-        # Configure heatmap
         if select_radio == 'Whole year':
             heatmap2 = alt.Chart(source).mark_rect(color = 'red').encode(
                 x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
@@ -104,14 +100,12 @@ def heatmap_hum():
                 color = alt.Color('humitat_baixa:Q', scale=alt.Scale(domain=[0,39]), title = '% Hours humidity lower than comfort')
             )
 
-        # Configure text
         text2 = alt.Chart(source).mark_text(baseline='middle').encode(
             x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title='Floor'),
             text = alt.Text('Aula:N'),
         )
 
-        # Draw the chart
         if select_radio == 'Whole year':
             chart2 = (heatmap2 + text2)
         else:
@@ -122,12 +116,10 @@ def heatmap_hum():
 
 
 def humidity_temp_high():
-    # Load the data
     df = pd.read_csv('highhumtempcount.csv')
 
-    # Scatter Plot with adjusted spacing
     scatter_chart = alt.Chart(df).mark_point(filled=True).encode(
-        y=alt.Y('Month:O', scale=alt.Scale(padding=10)),  # Adjust padding as needed
+        y=alt.Y('Month:O', scale=alt.Scale(padding=10)),
         x=alt.X('Aula:N', title='Classroom', axis=alt.Axis(labelAngle=0)),
         size=alt.Size('count:Q', title = 'Count'),
         tooltip=['Aula', 'Month', 'count']
@@ -143,12 +135,10 @@ def humidity_temp_high():
 def scatter_sensation():
     df = pd.read_csv('highhumtempsensation.csv')
     color_palette = alt.Scale(domain=['High', 'Caution', 'Extreme caution'], range=['#ffce44', '#ff8243', 'red'])
-    # Scatter plot
     scatter_chart = alt.Chart(df).mark_point(filled=True).encode(
         x='Date:T',  # Assuming 'Date' is the column name for dates
         y=alt.Y('Heat index:Q', scale=alt.Scale(domain=[25,36])),
         color=alt.Color('Sensation:N', scale = color_palette),
-        #size='Humidity:Q',
         tooltip=['Aula', 'Date:T', 'Temperatura', 'Heat index', 'Humidity']
     ).properties(
         title='Scatter Plot of heat index (temperature affected by humidity)',
@@ -163,14 +153,11 @@ def scatter_sensation():
 def metrics_aules_hum():
     st.write('**Ranking: Humidity Statistics for Each Class**')
 
-    # Load and preprocess the data
     aules_temp = get_humidityaules_data()
     grouped_temp = aules_temp.groupby('Aula')['Humidity'].agg(['mean', 'min', 'max']).reset_index().round(2).reset_index()
 
-    # Sorting options
     sort_order = st.selectbox("Sort order", ["Class position", "More to Less Humid", "Less to More Humid"], key = '222')
 
-    # Sort the DataFrame based on the user's selection
     if sort_order == "More to Less Humid":
      grouped_temp = grouped_temp.sort_values(by='mean', ascending=False)
     elif sort_order == "Less to More Humid":
@@ -178,7 +165,6 @@ def metrics_aules_hum():
     else:
      grouped_temp = grouped_temp.sort_values(by='Aula', ascending=True)
 
-    # Display the metrics using st.expander to save space
     for _, row in grouped_temp.iterrows():
         aula = row['Aula']
         mean_temp = row['mean']

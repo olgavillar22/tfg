@@ -12,11 +12,9 @@ def plot_diff_floors_temperatura():
     mean_monthly_temp = pd.read_csv('temperaturefloormean.csv')
     palette_plantes = alt.Scale(domain=[1, 2, 3, 4, 5, 6], range=['#2496cd', '#e52b50', '#3b7a57', '#ff8b00', '#804040', '#9932cc'])
 
-    # Slider for the month
     slider_month = alt.binding_range(name='Month', min=1, max=12, step=1)
     selector_month = alt.selection_single(name="Select a month", fields=['Date'], bind=slider_month, init={'Date': 1})
 
-    # Bar chart for temperature differences
     bar_chart = alt.Chart(diff_temp).mark_bar().encode(
         y=alt.Y('Planta:N', title='Floor', scale=alt.Scale(reverse=True)),
         x=alt.X('diff:Q', title='Temperature Difference (℃)', scale = alt.Scale(domain=[-1.1, 0.7])),
@@ -39,29 +37,23 @@ def plot_floors_temp():
 
     col1, col2 = st.columns(2)
     with col1:
-        # Add groupby button custom
         select_groupby_var = get_time_groupby_selection('planta_temp')
         temp = groupby_time_planta(temp, select_groupby_var)
         temp['Date'] = temp['Date'].dt.to_timestamp()
     with col2:
-        # Function to convert floor numbers to ordinal strings
         def ordinal(n):
             return "%d%s" % (n, "tsnrhtdd"[(n//10%10!=1)*(n%10<4)*n%10::4])
 
-        # Create a mapping for floor numbers to ordinal strings
         floor_mapping = {floor: ordinal(floor) for floor in temp['Planta'].unique()}
 
-        # Map the floor numbers to ordinal strings
         temp['Planta_str'] = temp['Planta'].map(floor_mapping)
 
-        # Multi-select for floor selection with ordinal labels
         selected_floors = st.multiselect(
             "Select Floors to Highlight",
             options=temp['Planta_str'].unique(),
             default=temp['Planta_str'].unique()
         )
 
-    # Filter data based on selected time interval
     start_date, end_date = get_time_filter('planta_temp')
     filtered_data = temp[(temp['Date'] >= start_date) & (temp['Date'] <= end_date)]
 
@@ -120,8 +112,7 @@ def heatmap_temperatures():
     col1, col2 = st.columns(2)
 
     with col1:
-        # TEMPERATURA ALTA
-        # Configure heatmap
+        # High temperature
         if select_radio == 'Whole year': #set a different domain
             heatmap = alt.Chart(source).mark_rect(color = 'red').encode(
                 x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
@@ -135,14 +126,12 @@ def heatmap_temperatures():
                 color = alt.Color('temp_excessiva_alta:Q', scale=alt.Scale(scheme='reds', domain=[0,100]), title = '% Hours temperature higher than comfort')
             )
 
-        # Configure text
         text = alt.Chart(source).mark_text(baseline='middle').encode(
             x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title = 'Floor'),
             text = alt.Text('Aula:N'),
         )
 
-        # Draw the chart
         if select_radio == 'Whole year':
             chart1 = (heatmap + text)
         else:
@@ -151,8 +140,7 @@ def heatmap_temperatures():
         st.altair_chart(chart1, use_container_width=True, theme='streamlit')
 
     with col2:
-        # TEMPERATURA BAIXA
-        # Configure heatmap
+        # Low temperature
         if select_radio == 'Whole year': #set a different domain
             heatmap2 = alt.Chart(source).mark_rect(color = 'red').encode(
                 x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
@@ -166,14 +154,12 @@ def heatmap_temperatures():
                 color = alt.Color('temp_excessiva_baixa:Q', scale=alt.Scale(domain=[0,100]), title = '% Hours temperature lower than comfort')
             )
 
-        # Configure text
         text2 = alt.Chart(source).mark_text(baseline='middle').encode(
             x=alt.X('posicio:O', title='Class position', axis=alt.Axis(labelAngle=0)),
             y=alt.Y('planta:O', scale=alt.Scale(reverse=True), title = 'Floor'),
             text = alt.Text('Aula:N'),
         )
 
-        # Draw the chart
         if select_radio == 'Whole year':
             chart2 = (heatmap2+text2)
         else:
@@ -182,16 +168,13 @@ def heatmap_temperatures():
         st.altair_chart(chart2, use_container_width=True, theme='streamlit')
 
 
-
 @st.experimental_fragment
 def metrics_aules_temp():
     st.write('**Ranking: Temperature Statistics for Each Class**')
 
-    # Load and preprocess the data
     aules_temp = get_tempaules_data()
     grouped_temp = aules_temp.groupby('Aula')['Temperatura'].agg(['mean', 'min', 'max']).round(2).reset_index()
 
-    # Sorting options
     sort_order = st.selectbox("Sort order", ["Class position", "Colder to Warmer", "Warmer to Colder"])
 
     # Sort the DataFrame based on the user's selection

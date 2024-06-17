@@ -69,7 +69,6 @@ def dataclass_building_selection():
         st.session_state.selected_classes = selected_classes
 
     with col2:
-        # Variable selection
         variable = st.selectbox("Select variable to display:", ['Temperature', 'CO2', 'Humidity'], key='variable_selection')
 
         # Filter the dataset based on the selected classes
@@ -84,7 +83,6 @@ def dataclass_building_selection():
             filtered_aules_data = filtered_aules_data[filtered_aules_data['Month'] == slider_month]
             filtered_data_quality = filtered_data_quality[filtered_data_quality['Month'] == slider_month]
 
-    # Plot the data
     if not filtered_aules_data.empty:
         # Define a balanced color palette
         balanced_colors = ['#0070ff', '#ff43a4', '#ff9933', '#8db600', '#a75502', '#056608', '#e4d96f', '#bd3000', '#cc5500', '#ff66cc']
@@ -117,7 +115,6 @@ def dataclass_building_selection():
         )
 
 
-        # Define comfort ranges for each variable
         comfort_ranges = {
             'Temperature': {'min': 'min_comfort', 'max': 'max_comfort'},
             'CO2': {'min': 'outdoors_co2', 'max': 'max_co2'},
@@ -134,7 +131,6 @@ def dataclass_building_selection():
 
         st.altair_chart(combined_chart, use_container_width=True)
 
-        # Function to normalize percentages
         def normalize_percentages(df):
             df['Total'] = df[['Lower', 'Upper', 'Comfort']].sum(axis=1)
             df['Lower'] = (df['Lower'] / df['Total']) * 100

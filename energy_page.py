@@ -64,21 +64,16 @@ def plot_energia():
     energia = groupby_time(energia, select_groupby_var)
     energia['Date'] = energia['Date'].dt.to_timestamp()
 
-    # Filter data based on selected time interval
     filtered_data = energia[(energia['Date'] >= start_date) & (energia['Date'] <= end_date)]
 
-    # Melt the dataframe to long format for easier plotting with Altair
     energia_melted = filtered_data.melt('Date', var_name='Edifici', value_name='Value')
 
-    # Filter the data to include only the relevant categories
     filtered_energia = energia_melted[energia_melted['Edifici'].isin(['CS A', 'CS B', 'CS C', 'Electricitat Total'])]
 
-    # Define a selection that can be empty
     selection = alt.selection_multi(fields=['Edifici'], bind='legend', init=[{'Edifici': 'CS A'}, {'Edifici': 'CS B'}, {'Edifici': 'CS C'}, {'Edifici': 'Electricitat Total'}])
 
     color_palette = alt.Scale(domain=['CS A', 'CS B', 'CS C', 'Electricitat Total'], range=['#318ce7', '#1cac78', '#ad4379', '#da9100'])
 
-    # Create the line chart with selection
     chart = alt.Chart(filtered_energia).mark_line().encode(
         x='Date:T',
         y='Value:Q',
@@ -93,39 +88,28 @@ def plot_energia():
         title="Energy consumption of ETSAB in 2023"
     )
 
-    # Display the chart in Streamlit
     st.altair_chart(chart, use_container_width=True)
 
 
 @st.experimental_fragment
 def plot_temp_energy():
-    # PB: HEM FILTRAT NO WEEKENDS EN ENERGIA PERÒ EN TEMP SI Q HI SON
     campus_temp = pd.read_csv('tempCAMPUS2023_clean.csv')
     campus_temp['Date'] = pd.to_datetime(campus_temp['Date'], format='%Y-%m-%d %H:%M:%S')
 
-    #select_vacation = get_festius_energy_selection('entemp')
-    #if select_vacation == 'Mostra els festius':
     energia = get_energy_data(festius = True)
-    #else:
-    #    energia = get_energy_data(festius = False)
-    # en aquest plot ens interessa eliminar si o si els caps de setmana --> NO SÉ SI CAL FILTRE DE VACANCES el trec
     energia = energia[energia['is_weekend']==False]
 
     class_temp = get_temperatureA_data()
 
-    #PROVISIONAL GROUP BY
     campus_temp = campus_temp.groupby(campus_temp['Date'].dt.to_period('d')).mean().reset_index()
     class_temp = class_temp.groupby(class_temp['Date'].dt.to_period('d')).mean().reset_index()
-    # add class temp to campus temp df to have it all in one df (without the Planta)
     temps = campus_temp.merge(class_temp[['Date', 'avg_temp']], on='Date')
-    # From period type Date to datetime (period --> string --> datetime)
     temps['Date'] = temps['Date'].astype(str)
     temps['Date'] = pd.to_datetime(temps['Date'])
     energia = energia.groupby(energia['Date'].dt.to_period('d')).mean().reset_index()
     energia['Date'] = energia['Date'].astype(str)
     energia['Date'] = pd.to_datetime(energia['Date'])
 
-    # Temperature chart with area and lines
     temperature_area = alt.Chart(temps).mark_area(opacity=0.5).encode(
         x='Date:T',
         y=alt.Y('avg_temp:Q', title='Temperature (℃)'),
@@ -146,7 +130,6 @@ def plot_temp_energy():
         tooltip=['Date:T', 'Temperatura Campus Sud:Q']
     )
 
-    # Combine the temperature charts
     temperature_chart = alt.layer(
         temperature_area,
         line_indoor,
@@ -154,7 +137,7 @@ def plot_temp_energy():
     ).resolve_scale(
         y='shared'
     ).properties(
-        width=900,  # Width adjusted for larger display
+        width=900,
         height=400,
         title='Temperature and Energy Consumption'
     )
@@ -165,7 +148,7 @@ def plot_temp_energy():
         y=alt.Y('Electricitat Total:Q', axis=alt.Axis(title='Total Energy Consumption (kWh)', titleColor='red', orient='right')),
         tooltip=['Date:T', 'Electricitat Total:Q']
     ).properties(
-        width=900,  # Width adjusted for larger display
+        width=900,
         height=400
     )
 
@@ -176,13 +159,13 @@ def plot_temp_energy():
     ).resolve_scale(
         y='independent'
     ).properties(
-        width=900,  # Width adjusted for larger display
+        width=900,
         height=400,
         title='Temperature and Energy Consumption'
     )
 
-    # Display the combined chart and explanation text
     st.altair_chart(combined_chart, use_container_width=True)
+
 
 @st.experimental_fragment
 def plot_week_seasonal_energy_trend():
@@ -192,7 +175,6 @@ def plot_week_seasonal_energy_trend():
     building_options = ['A (Segarra)', 'B', 'C (Coderch)', 'Total']
     select_building = st.radio("Choose building:", building_options, key = "filter_building_seasonal", horizontal = True)
 
-    # Map building names to corresponding variables
     building_variable_mapping = {
         'A (Segarra)': 'CS A',
         'B': 'CS B',
@@ -221,7 +203,6 @@ def plot_week_seasonal_energy_trend():
 
 
 def main():
-    # HTML for the header
     html_temp = """
     <div style="background-color:gray;padding:0px">
     <h4 style="color:white;text-align:center;">Energy Consumption</h2>
@@ -282,7 +263,9 @@ def main():
     <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
         <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
         <ul>
-            <li>In vacation and Summer days, a huge decrease of consumption can be appreciated in all the buildings. </li>
+            <li>Buildings A and C display similar daily energy consumption patterns across different seasons and days of the week, although Building A has notably higher consumption. </li>
+            <li>They have two clear peaks in energy use: one in the morning (around 11 AM) and another in the late afternoon (around 5 PM).</li>
+            <li>In the vacation days, all the buildings experiment a huge decease of energy consumption.</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -299,7 +282,8 @@ def main():
         <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
         <ul>
             <li>It can clearly be seen that as more difference of indoor-outdoor temperature, more energy consumption. </li>
-            <li>it is curious to see that the mean temperature indoors is always highest than the outdoors temperature.</li>
+            <li>During spring and summer, as the temperatures raise and their difference narrows, the consumption also decreases. </li>
+            <li>It is curious to see that the mean temperature indoors is always highest than the outdoors temperature.</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
