@@ -177,12 +177,36 @@ def main():
     This section provides an overview of the air quality metrics for each classroom. We consider the percentage of hours each classroom is out of the comfort zone for various variables like temperature, humidity, and CO₂ concentrations.
     """)
 
+    st.markdown("<h4 >Percentage of Class Hours Outside Comfort</h4>", unsafe_allow_html=True)
     st.write("""
     The heatmap below shows the percentage of hours each classroom is outside the comfort zone for each variable. It helps identify classrooms that consistently have poor air quality.
     """)
     heatmap_aules_quality()
+    # Insights & Takeaways
+    st.markdown("""
+    <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
+        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
+        <ul>
+            <li>Temperature is the variable most frequently out of the comfort zone, with all classes experiencing deviations for 20% to 60% of the class hours.</li>
+            <li>Each variable shows different patterns, there's no evidence in terms of overall air quality.</li>
+            <li>First quarter has the highest percentage of class hours outside the comfort zone for all variables.</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
+    st.markdown("<h4 >Normalized Deviation from Comfort</h4>", unsafe_allow_html=True)
     st.write("""
     The next heatmap shows the normalized mean deviations from the comfort zone for each classroom and each variable. This metric provides a more nuanced view of how far the readings deviate from the optimal range.
     """)
     heatmap_aules_quality_metrics()
+    # Insights & Takeaways
+    st.markdown("""
+    <div style="border-radius: 10px; background-color: #f0f0f0; padding: 15px; margin: 10px 0;">
+        <h4 style="font-size: 14px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 2px;">Insights & Takeaways</h4>
+        <ul>
+            <li>The third floor has the worst quality classrooms in terms of temperature and CO₂ Concentration.</li>
+            <li>Classroom A-36 deviates the most in temperature during the first quarter and is also one of the worst for CO₂ Concentration in the same period.</li>
+            <li>A-31 has the highest CO₂ Concentration deviations from comfort in the first quarter. In the second quarter, A-33 is the most deviated for CO₂, while the others remain low deviated.
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
