@@ -4,9 +4,7 @@ import altair as alt
 
 from common_functions import *
 
-@st.experimental_fragment
 def heatmap_aules_quality_chart(source):
-    #source = source.groupby('Aula').mean().reset_index()
     col1, col2, col3 = st.columns(3)
 
     with col1:
@@ -79,21 +77,13 @@ def heatmap_aules_quality():
 
     if select_epoch_var == 'All year':
         source = get_qualitataulesnovacation_data()
-        heatmap_aules_quality_chart(source)
-
     elif select_epoch_var == 'Q1 (september - january)':
         source = pd.read_csv('qualitat_aules_Q1.csv')
-        heatmap_aules_quality_chart(source)
-
     else:
         source = pd.read_csv('qualitat_aules_Q2.csv')
-        heatmap_aules_quality_chart(source)
 
+    heatmap_aules_quality_chart(source)
 
-    #chart = alt.hconcat(chart1, chart2, chart3).resolve_scale(color='independent').configure_legend(orient='bottom').properties(title = '# times exceeding comfort in 2023')
-
-
-    #st.altair_chart(chart, use_container_width=True, theme='streamlit')
 
 @st.experimental_fragment
 def heatmap_quality_metrics(source):
