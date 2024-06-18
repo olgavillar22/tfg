@@ -245,37 +245,14 @@ def main():
     st.write("""
     <div style="padding: 15px; margin-top: 20px;">
         <h4 style="color: gray;">Additional Information:</h4>
-        <p style="color: gray;">In the CO₂ graphics, vacation days are the ones where there's no class or activity for the students, as there's no usage of the classrooms. So, the following dates are excluded from the air quality analysis:
-            <br>
-            2023-09-25, 2023-10-12, 2023-11-01, 2023-12-06, 2023-12-07, 2023-12-08, 2023-12-23, 2023-12-24, 2023-12-25, 2023-12-26, 2023-12-27, 2023-12-28, 2023-12-29, 2023-12-30, 2023-12-31, 2023-01-01, 2023-01-02, 2023-01-03, 2023-01-04, 2023-01-05, 2023-01-06, 2023-01-07, 2023-01-08, 2023-01-09, 2023-01-10, 2023-04-01, 2023-04-02, 2023-04-03, 2023-04-04, 2023-04-05, 2023-04-06, 2023-04-07, 2023-04-08, 2023-04-09, 2023-04-10, 2023-05-01, 2023-09-11.
-            <br>
-            All August and July days and weekends are also excluded.
-        </p>
+        <p style="color: gray;">In the CO₂ graphics, vacation days are the ones where there's no class or activity for the students, as there's no usage of the classrooms. So, the following dates are excluded from the air quality analysis:<br>
+        2023-09-25, 2023-10-12, 2023-11-01, 2023-12-06, 2023-12-07, 2023-12-08, 2023-12-23, 2023-12-24, 2023-12-25, 2023-12-26, 2023-12-27, 2023-12-28, 2023-12-29, 2023-12-30, 2023-12-31, 2023-01-01, 2023-01-02, 2023-01-03, 2023-01-04, 2023-01-05, 2023-01-06, 2023-01-07, 2023-01-08, 2023-01-09, 2023-01-10, 2023-04-01, 2023-04-02, 2023-04-03, 2023-04-04, 2023-04-05, 2023-04-06, 2023-04-07, 2023-04-08, 2023-04-09, 2023-04-10, 2023-05-01, 2023-09-11.<br>
+        All August and July days and weekends are also excluded.</p>
         <br>
         <p style="color: gray;">Number of Windows of each Classroom of Building Segarra:</p>
-        <div style="overflow-x:auto;">
-            <table style="width:100%; border-collapse: collapse; border: 1px solid gray;">
-                <tr style="background-color: #f2f2f2;">
-                    <th style="padding: 8px; text-align: left; border: 1px solid gray;">Number of Windows</th>
-                    <th style="padding: 8px; text-align: left; border: 1px solid gray;">Classrooms</th>
-                </tr>
-                <tr>
-                    <td style="padding: 8px; text-align: left; border: 1px solid gray;">4</td>
-                    <td style="padding: 8px; text-align: left; border: 1px solid gray;">A-31, A-32, A-33, A-34, A-35, A-36, A-41, A-51, A-52, A-53, A-54, A-55, A-56</td>
-                </tr>
-                <tr>
-                    <td style="padding: 8px; text-align: left; border: 1px solid gray;">5</td>
-                    <td style="padding: 8px; text-align: left; border: 1px solid gray;">A-61</td>
-                </tr>
-                <tr>
-                    <td style="padding: 8px; text-align: left; border: 1px solid gray;">6</td>
-                    <td style="padding: 8px; text-align: left; border: 1px solid gray;">A-11, A-12, A-13, A-14, A-21, A-22, A-23, A-24, A-43, A-62</td>
-                </tr>
-                <tr>
-                    <td style="padding: 8px; text-align: left; border: 1px solid gray;">7</td>
-                    <td style="padding: 8px; text-align: left; border: 1px solid gray;">A-42</td>
-                </tr>
-            </table>
-        </div>
+        <p style="color: gray;">4 windows: A-31, A-32, A-33, A-34, A-35, A-36, A-41, A-51, A-52, A-53, A-54, A-55, A-56</p>
+        <p style="color: gray;">5 windows: A-61</p>
+        <p style="color: gray;">6 windows: A-11, A-12, A-13, A-14, A-21, A-22, A-23, A-24, A-43, A-62</p>
+        <p style="color: gray;">7 windows: A-42</p>
     </div>
     """, unsafe_allow_html=True)
